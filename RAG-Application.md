@@ -59,7 +59,7 @@ flowchart LR
         F --> G[Top-k similarity search]
         E --> G
         G --> H[Build prompt with<br/>numbered passages]
-        H --> I[Qwen2.5-7B-Instruct<br/>llama.cpp on GPU]
+        H --> I[qwen2.5-14b-instruct-q4_k_m.gguf<br/>llama.cpp on GPU]
         I --> J[Streamed answer<br/>with citations]
     end
 ```
@@ -77,7 +77,7 @@ In plain words:
 
 | Layer | Tool | Role |
 |---|---|---|
-| LLM | [Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF) (Q4_K_M GGUF) | Answer generation |
+| LLM | [qwen2.5-14b-instruct-q4_k_m.gguf | Answer generation |
 | LLM runtime | [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) (CUDA build) | Fast quantized inference on GPU |
 | Embeddings | [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) via `sentence-transformers` | Semantic vectors (512-token window) |
 | Vector DB | [ChromaDB](https://www.trychroma.com/) (persistent, cosine / HNSW) | Storage and similarity search |
@@ -96,7 +96,7 @@ In plain words:
 - An NVIDIA GPU with a recent driver (CPU works too, but is very slow)
 - Python 3.10
 - Your own `.epub` files
-- A GGUF chat model, e.g. [Qwen2.5-7B-Instruct-GGUF](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF) (`qwen2.5-7b-instruct-q4_k_m.gguf`)
+- A GGUF chat model, e.g. qwen2.5-14b-instruct-q4_k_m.gguf
 
 ### 1. Clone the repo
 
@@ -145,7 +145,7 @@ A healthy startup log looks like this:
 
 ```
 🖥️  Embeddings on GPU: NVIDIA GeForce RTX 4060 Ti
-📦 Loading LLM: qwen2.5-7b-instruct-q4_k_m.gguf  (llama.cpp GPU offload supported: True)
+📦 Loading LLM: qwen2.5-14b-instruct-q4_k_m.gguf (llama.cpp GPU offload supported: True)
 📚 14 EPUB files found, 14 already indexed, 0 new.
 🎉 Launching UI at http://127.0.0.1:7860
 ```
@@ -325,6 +325,39 @@ All settings are constants at the top of `book_rag_local.py`:
 **Switching the LLM:** put a different `.gguf` file in `models/` (keep only one there).
 
 ---
+## Agentic Reasoning Mode
+
+Beyond simple retrieval, this system includes an agentic reasoning layer where the LLM actively plans and executes a multi-step search strategy before generating answers.
+
+** How It Works**
+User Question
+    ↓
+[LLM Planning] → "I need to search for X, then Y, then compare"
+    ↓
+[Tool Execution] → Search passages for X, fetch character info for Y, compare results
+    ↓
+[Context Synthesis] → Combine all passages and generate grounded answer
+    ↓
+Answer with Citations
+Features
+Adaptive Planning: LLM decides what to search for, not fixed retrieval
+Multi-step Reasoning: Up to 3 tool calls per question (search, character lookup, cross-volume comparison)
+Self-Correction: Explicit reasoning trace shows LLM's decision-making
+Debug Mode: See exactly which tools were called and in what order
+Usage
+bash
+# Standard mode (fast, retrieval-based)
+python book_rag_local_v2.py
+
+# Agentic mode (slower, reasoning-based)
+python book_rag_agentic.py
+
+In the UI, toggle between Standard and Agentic modes. Agentic mode:
+
+Takes 8-15 seconds per query (multi-step reasoning)
+Produces deeper, more contextual answers
+
+
 
 ## Design decisions
 
@@ -357,7 +390,7 @@ All settings are constants at the top of `book_rag_local.py`:
 
 **Current limitations**
 
-- Retrieval is purely semantic (dense vectors). Rare names or exact phrases can be missed.
+
 - Each question is answered independently. There is no chat memory or follow-up context.
 - Questions that need information from many places at once (for example "summarise the whole series") are limited by `top_k` and the context window.
 - Answer quality depends on the LLM, so a 7B model can still misread a passage or cite imperfectly.
