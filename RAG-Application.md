@@ -2,7 +2,8 @@
 
 A fully offline Retrieval-Augmented Generation (RAG) application that lets you ask natural-language questions about a collection of novels and get **answers grounded in the actual text, with numbered citations**. A quantized 7B LLM, the embedding model and the vector database all run on your own machine. No API keys, no cloud, no data leaving your PC.
 
-<img width="1861" height="776" alt="image" src="https://github.com/user-attachments/assets/bf2a434d-e6f3-4a74-8665-c9507ec2b605" />
+<img width="1879" height="675" alt="image" src="https://github.com/user-attachments/assets/a050a1e2-9c98-4785-9453-cb0466b4a1af" />
+
 
 ---
 ## Table of contents
