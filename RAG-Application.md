@@ -408,15 +408,3 @@ Produces deeper, more contextual answers
 
 ---
 
-## Legal note
-
-This repository contains **only code**. EPUB files and model weights are not included, and you must supply your own, legally obtained copies. Model weights are subject to their own licenses (see the Qwen2.5 and BGE model pages).
-
-## Author
-
-**Eriks Uzans**, QA Engineer focused on data quality and safety testing for AI/LLM systems.
-[LinkedIn](https://www.linkedin.com/in/<your-profile>) · [GitHub](https://github.com/<your-username>)
-
----
-
-*If you find this useful, a ⭐ is appreciated.*
