@@ -2,11 +2,9 @@
 
 A fully offline Retrieval-Augmented Generation (RAG) application that lets you ask natural-language questions about a collection of novels and get **answers grounded in the actual text, with numbered citations**. A quantized 7B LLM, the embedding model and the vector database all run on your own machine. No API keys, no cloud, no data leaving your PC.
 
-<!-- Add a screenshot or GIF of the Gradio UI here, e.g.: -->
-<!-- ![Book RAG UI](docs/screenshot.png) -->
+<img width="1861" height="776" alt="image" src="https://github.com/user-attachments/assets/bf2a434d-e6f3-4a74-8665-c9507ec2b605" />
 
 ---
-
 ## Table of contents
 
 1. [The problem](#the-problem)
